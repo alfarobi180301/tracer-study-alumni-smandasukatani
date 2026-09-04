@@ -68,7 +68,7 @@ col_logo_1, col_logo_2, col_logo_3 = st.columns([1, 2, 1])
 with col_logo_2:
     # Memeriksa apakah logo.png ada di direktori lokal
     if os.path.exists("logo.png"):
-        st.image("logo.png", width=140, use_column_width=False)
+        st.image("logo.png", width=140, use_container_width=False)
     else:
         # Jika tidak ada, berikan instruksi cara menambahkan logo dan pasang icon sebagai representasi
         st.markdown("<h1 style='text-align: center; font-size: 5rem;'>🏫</h1>", unsafe_allow_html=True)
