@@ -104,8 +104,9 @@ except Exception as e:
     st.markdown(f"""
     **Kemungkinan Penyebab & Cara Mengatasi:**
     1. **Akses Berbagi Belum Dibuka**: 
-       Buka Spreadsheet Google Drive Anda -> Klik **Bagikan (Share)** -> Ubah status akses umum menjadi **\"Siapa saja yang memiliki link dapat melihat\"** (*Anyone with link can view*).
-    2. **Koneksi Jaringan**: \n       Pastikan server Streamlit dan jaringan Anda stabil.
+       Buka Spreadsheet Google Drive Anda -> Klik **Bagikan (Share)** -> Ubah status akses umum menjadi **"Siapa saja yang memiliki link dapat melihat"** (*Anyone with link can view*).
+    2. **Koneksi Jaringan**: 
+       Pastikan server Streamlit dan jaringan Anda stabil.
     
     *Detail Error Teknis:* `{e}`
     """)
@@ -366,16 +367,6 @@ if load_success and df_raw is not None:
             </p>
         </div>
         """, unsafe_allow_html=True)
-
-    # Tombol unduh data hasil pencarian/filter dalam bentuk CSV
-    st.markdown("<br>", unsafe_allow_html=True)
-    csv_data = df_filtered.to_csv(index=False).encode('utf-8')
-    st.download_button(
-        label="📥 Unduh Hasil Pencarian (CSV)",
-        data=csv_data,
-        file_name="tracer_study_filtered_alumni.csv",
-        mime="text/csv"
-    )
 
     st.markdown("""
     <hr style="border:0.5px solid #eaeaea;">
