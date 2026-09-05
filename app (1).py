@@ -81,7 +81,7 @@ with col_logo_2:
         st.info("💡 **Tips untuk GitHub**: Unggah file `logo.png` ke repositori GitHub Anda bersama file ini agar logo resmi SMAN 2 Sukatani otomatis muncul!")
 
 st.markdown("<h1 class='main-header'>TRACER STUDY ALUMNI SMAN 2 SUKATANI</h1>", unsafe_allow_html=True)
-st.markdown("<p class='sub-header'>Sistem Pemantauan Perkembangan Karier, Perguruan Tinggi, dan Kewirausahaan Alumni (Data Alumni Lulus Tahun 2022-2026)</p>", unsafe_allow_html=True)
+st.markdown("<p class='sub-header'>Sistem Pemantauan Perkembangan Karier, Perguruan Tinggi, dan Kewirausahaan Alumni</p>", unsafe_allow_html=True)
 
 # --- SIDEBAR: STATUS DATA & REFRESH ---
 st.sidebar.markdown("## ⚙️ Status Koneksi")
@@ -311,6 +311,23 @@ if load_success and df_raw is not None:
                 )
                 fig_bar.update_traces(textposition="inside")
                 st.plotly_chart(fig_bar, use_container_width=True)
+                
+                # --- REKAP TABEL UNIVERSITAS ---
+                st.markdown("##### 📋 Rekap Tabel Jumlah Siswa per Universitas")
+                rekap_univ = univ_counts.copy()
+                rekap_univ["Persentase"] = rekap_univ["Persentase"].map("{:.1f}%".format)
+                
+                st.dataframe(
+                    rekap_univ,
+                    use_container_width=True,
+                    height=200,
+                    column_config={
+                        "Universitas": st.column_config.TextColumn("Nama Universitas / Perguruan Tinggi", width="large"),
+                        "Jumlah Alumni": st.column_config.NumberColumn("Jumlah Alumni", format="%d orang", width="small"),
+                        "Persentase": st.column_config.TextColumn("Persentase dari Total Kuliah", width="small")
+                    },
+                    hide_index=True
+                )
             else:
                 st.info("Pilih kategori 'KULIAH' pada filter karier untuk melihat sebaran Universitas.")
 
