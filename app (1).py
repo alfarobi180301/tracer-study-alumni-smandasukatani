@@ -81,7 +81,7 @@ with col_logo_2:
         st.info("💡 **Tips untuk GitHub**: Unggah file `logo.png` ke repositori GitHub Anda bersama file ini agar logo resmi SMAN 2 Sukatani otomatis muncul!")
 
 st.markdown("<h1 class='main-header'>TRACER STUDY ALUMNI SMAN 2 SUKATANI</h1>", unsafe_allow_html=True)
-st.markdown("<p class='sub-header'>Sistem Pemantauan Perkembangan Karier, Perguruan Tinggi, dan Kewirausahaan Alumni</p>", unsafe_allow_html=True)
+st.markdown("<p class='sub-header'>Sistem Pemantauan Perkembangan Karier, Perguruan Tinggi, dan Kewirausahaan Alumni (Data Alumni Lulus Tahun 2022-2026)</p>", unsafe_allow_html=True)
 
 # --- SIDEBAR: STATUS DATA & REFRESH ---
 st.sidebar.markdown("## ⚙️ Status Koneksi")
