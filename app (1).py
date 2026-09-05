@@ -83,9 +83,8 @@ with col_logo_2:
 st.markdown("<h1 class='main-header'>TRACER STUDY ALUMNI SMAN 2 SUKATANI</h1>", unsafe_allow_html=True)
 st.markdown("<p class='sub-header'>Sistem Pemantauan Perkembangan Karier, Perguruan Tinggi, dan Kewirausahaan Alumni</p>", unsafe_allow_html=True)
 
-# --- SIDEBAR: STATUS DATA & REFRESH ---
-st.sidebar.markdown("## ⚙️ Status Koneksi")
-st.sidebar.success("🔗 Terhubung langsung ke Google Sheets")
+# --- SIDEBAR: REFRESH DATA ---
+st.sidebar.markdown("## ⚙️ Pembaruan Data")
 
 # Tombol Refresh Data untuk Membersihkan Cache Secara Instan
 if st.sidebar.button("🔄 Perbarui Data Sekarang"):
