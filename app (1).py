@@ -18,15 +18,17 @@ st.markdown("""
         color: #8B0000;
         font-family: 'Trebuchet MS', sans-serif;
         font-weight: bold;
-        text-align: center;
-        margin-bottom: 5px;
+        text-align: left;
+        margin-top: 0px;
+        margin-bottom: 2px;
     }
     .sub-header {
         color: #DAA520;
         font-family: 'Trebuchet MS', sans-serif;
-        text-align: center;
-        font-size: 1.2rem;
-        margin-bottom: 25px;
+        text-align: left;
+        font-size: 1.15rem;
+        margin-top: 0px;
+        margin-bottom: 10px;
     }
     .card-kpi {
         background-color: #fcfcfc;
@@ -70,18 +72,22 @@ def load_data_from_sheets(url):
     csv_url = convert_google_sheet_url(url)
     return pd.read_csv(csv_url)
 
-# Header Dashboard (Logo dan Judul)
-col_logo_1, col_logo_2, col_logo_3 = st.columns([1, 2, 1])
+# Header Dashboard (Logo dan Judul Sejajar)
+col_header_logo, col_header_title = st.columns([1, 8])
 
-with col_logo_2:
+with col_header_logo:
+    # Sedikit spacer atas agar logo sejajar dengan garis tengah judul
+    st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
     if os.path.exists("logo.png"):
-        st.image("logo.png", width=140, use_container_width=False)
+        st.image("logo.png", width=110, use_container_width=False)
     else:
-        st.markdown("<h1 style='text-align: center; font-size: 5rem;'>🏫</h1>", unsafe_allow_html=True)
-        st.info("💡 **Tips untuk GitHub**: Unggah file `logo.png` ke repositori GitHub Anda bersama file ini agar logo resmi SMAN 2 Sukatani otomatis muncul!")
+        st.markdown("<h1 style='text-align: center; font-size: 4rem; margin: 0;'>🏫</h1>", unsafe_allow_html=True)
 
-st.markdown("<h1 class='main-header'>TRACER STUDY ALUMNI SMAN 2 SUKATANI</h1>", unsafe_allow_html=True)
-st.markdown("<p class='sub-header'>Sistem Pemantauan Perkembangan Karier, Perguruan Tinggi, dan Kewirausahaan Alumni Tahun Lulus 2022-2026</p>", unsafe_allow_html=True)
+with col_header_title:
+    # Sedikit spacer atas agar judul sejajar dengan logo
+    st.markdown("<div style='height: 15px;'></div>", unsafe_allow_html=True)
+    st.markdown("<h1 class='main-header'>TRACER STUDY ALUMNI SMAN 2 SUKATANI</h1>", unsafe_allow_html=True)
+    st.markdown("<p class='sub-header'>Sistem Pemantauan Perkembangan Karier, Perguruan Tinggi, dan Kewirausahaan Alumni</p>", unsafe_allow_html=True)
 
 # --- SIDEBAR: REFRESH DATA ---
 st.sidebar.markdown("## ⚙️ Pembaruan Data")
@@ -203,7 +209,7 @@ if load_success and df_raw is not None:
         df_filtered = df_filtered[df_filtered["Jurusan"].isin(selected_jurusan)]
 
     # --- METRICS & KPI SECTION ---
-    st.markdown("### 📊 Statistik Alumni")
+    st.markdown("### 📊 Ringkasan Statistik Alumni")
     total_alumni = len(df_filtered)
 
     if total_alumni > 0:
@@ -320,7 +326,7 @@ if load_success and df_raw is not None:
         ]
         if len(kuliah_only_all) > 0:
             st.markdown("<br>", unsafe_allow_html=True)
-            st.subheader("📋 Rekap Universitas")
+            st.subheader("📋 Rekap Tabel Jumlah Siswa per Universitas")
             univ_counts_all = kuliah_only_all["Universitas/Instansi/Perusahaan"].value_counts().reset_index()
             univ_counts_all.columns = ["Universitas", "Jumlah Alumni"]
             
@@ -343,7 +349,7 @@ if load_success and df_raw is not None:
             )
 
     # --- PENCARIAN PROFIL DETAIL ALUMNI (MENGGANTIKAN TABEL) ---
-    st.markdown("### 🔍 Hasil Pencarian Alumni")
+    st.markdown("### 🔍 Hasil Pencarian Detail Alumni")
 
     if search_name:
         # Cari data berdasarkan text input Nama
