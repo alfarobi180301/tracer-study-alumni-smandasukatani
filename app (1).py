@@ -85,7 +85,7 @@ st.markdown("<p class='sub-header'>Sistem Pemantauan Perkembangan Karier, Pergur
 
 # --- SIDEBAR: STATUS DATA & REFRESH ---
 st.sidebar.markdown("## ⚙️ Status Koneksi")
-st.sidebar.success("🔗 Terhubung langsung ke Google Sheets (Dinamis)")
+st.sidebar.success("🔗 Terhubung langsung ke Google Sheets")
 
 # Tombol Refresh Data untuk Membersihkan Cache Secara Instan
 if st.sidebar.button("🔄 Perbarui Data Sekarang"):
@@ -104,9 +104,8 @@ except Exception as e:
     st.markdown(f"""
     **Kemungkinan Penyebab & Cara Mengatasi:**
     1. **Akses Berbagi Belum Dibuka**: 
-       Buka Spreadsheet Google Drive Anda -> Klik **Bagikan (Share)** -> Ubah status akses umum menjadi **"Siapa saja yang memiliki link dapat melihat"** (*Anyone with link can view*).
-    2. **Koneksi Jaringan**: 
-       Pastikan server Streamlit dan jaringan Anda stabil.
+       Buka Spreadsheet Google Drive Anda -> Klik **Bagikan (Share)** -> Ubah status akses umum menjadi **\"Siapa saja yang memiliki link dapat melihat\"** (*Anyone with link can view*).
+    2. **Koneksi Jaringan**: \n       Pastikan server Streamlit dan jaringan Anda stabil.
     
     *Detail Error Teknis:* `{e}`
     """)
@@ -187,9 +186,6 @@ if load_success and df_raw is not None:
 
     # --- MEMULAI PENYARINGAN DATA ---
     df_filtered = df.copy()
-
-    if search_name:
-        df_filtered = df_filtered[df_filtered["Nama"].str.contains(search_name, case=False, na=False)]
 
     if selected_tahun:
         df_filtered = df_filtered[df_filtered["Tahun Lulus"].isin(selected_tahun)]
@@ -317,26 +313,65 @@ if load_success and df_raw is not None:
             else:
                 st.info("Pilih kategori 'KULIAH' pada filter karier untuk melihat sebaran Universitas.")
 
-    # --- DETAILED DATA TABLE AND DOWNLOAD ---
-    st.markdown("### 📋 Tabel Data Alumni Terfilter")
+    # --- PENCARIAN PROFIL DETAIL ALUMNI (MENGGANTIKAN TABEL) ---
+    st.markdown("### 🔍 Hasil Pencarian Detail Alumni")
 
-    st.dataframe(
-        df_filtered,
-        use_container_width=True,
-        column_config={
-            "Nama": st.column_config.TextColumn("Nama Lengkap", width="medium"),
-            "Kelas": st.column_config.TextColumn("Kelas", width="small"),
-            "Karier": st.column_config.TextColumn("Status Karier", width="small"),
-            "Universitas/Instansi/Perusahaan": st.column_config.TextColumn("Universitas / Instansi / Perusahaan", width="large"),
-            "Jurusan": st.column_config.TextColumn("Program Studi / Jurusan", width="medium"),
-            "Tahun Lulus": st.column_config.NumberColumn("Tahun Lulus", format="%d")
-        }
-    )
+    if search_name:
+        # Cari data berdasarkan text input Nama
+        matches = df_filtered[df_filtered["Nama"].str.contains(search_name, case=False, na=False)]
+        
+        if len(matches) == 0:
+            st.warning("⚠️ Tidak ditemukan data alumni yang cocok dengan kata kunci nama tersebut.")
+        elif len(matches) > 3:
+            st.info(f"💡 Ditemukan {len(matches)} nama alumni yang cocok. Silakan pilih salah satu nama di bawah ini untuk melihat profil lengkap:")
+            selected_alumni = st.selectbox("Pilih Alumni:", ["-- Pilih Alumni --"] + sorted(matches["Nama"].unique().tolist()))
+            if selected_alumni != "-- Pilih Alumni --":
+                row = matches[matches["Nama"] == selected_alumni].iloc[0]
+                st.markdown(f"""
+                <div style="background-color: #fcfcfc; padding: 20px; border-radius: 12px; border-left: 5px solid #8B0000; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-top: 15px;">
+                    <h3 style="color: #8B0000; margin-top: 0; margin-bottom: 15px; font-family: sans-serif;">🎓 PROFIL LENGKAP ALUMNI</h3>
+                    <table style="width: 100%; border-collapse: collapse; font-size: 1.05rem;">
+                        <tr style="border-bottom: 1px solid #eee;"><td style="padding: 10px 0; font-weight: bold; width: 35%; color: #555;">Nama Lengkap</td><td style="padding: 10px 0; font-weight: bold; color: #8B0000;">{row['Nama']}</td></tr>
+                        <tr style="border-bottom: 1px solid #eee;"><td style="padding: 10px 0; font-weight: bold; color: #555;">Kelas Terakhir</td><td style="padding: 10px 0;">{row['Kelas']}</td></tr>
+                        <tr style="border-bottom: 1px solid #eee;"><td style="padding: 10px 0; font-weight: bold; color: #555;">Tahun Lulus</td><td style="padding: 10px 0;">{row['Tahun Lulus']}</td></tr>
+                        <tr style="border-bottom: 1px solid #eee;"><td style="padding: 10px 0; font-weight: bold; color: #555;">Status Karier</td><td style="padding: 10px 0;"><span style="background-color: #8B0000; color: white; padding: 4px 10px; border-radius: 4px; font-weight: bold; font-size: 0.85rem;">{row['Karier']}</span></td></tr>
+                        <tr style="border-bottom: 1px solid #eee;"><td style="padding: 10px 0; font-weight: bold; color: #555;">Universitas / Instansi / Perusahaan</td><td style="padding: 10px 0;">{row['Universitas/Instansi/Perusahaan']}</td></tr>
+                        <tr style="border-bottom: 1px solid #eee;"><td style="padding: 10px 0; font-weight: bold; color: #555;">Program Studi / Jurusan</td><td style="padding: 10px 0;">{row['Jurusan']}</td></tr>
+                    </table>
+                </div>
+                """, unsafe_allow_html=True)
+        else:
+            # Jika matches <= 3, tampilkan langsung dalam bentuk kartu profil yang rapi
+            for _, row in matches.iterrows():
+                st.markdown(f"""
+                <div style="background-color: #fcfcfc; padding: 20px; border-radius: 12px; border-left: 5px solid #8B0000; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 15px;">
+                    <h3 style="color: #8B0000; margin-top: 0; margin-bottom: 15px; font-family: sans-serif;">👤 PROFIL ALUMNI</h3>
+                    <table style="width: 100%; border-collapse: collapse; font-size: 1.05rem;">
+                        <tr style="border-bottom: 1px solid #eee;"><td style="padding: 10px 0; font-weight: bold; width: 35%; color: #555;">Nama Lengkap</td><td style="padding: 10px 0; font-weight: bold; color: #8B0000;">{row['Nama']}</td></tr>
+                        <tr style="border-bottom: 1px solid #eee;"><td style="padding: 10px 0; font-weight: bold; color: #555;">Kelas Terakhir</td><td style="padding: 10px 0;">{row['Kelas']}</td></tr>
+                        <tr style="border-bottom: 1px solid #eee;"><td style="padding: 10px 0; font-weight: bold; color: #555;">Tahun Lulus</td><td style="padding: 10px 0;">{row['Tahun Lulus']}</td></tr>
+                        <tr style="border-bottom: 1px solid #eee;"><td style="padding: 10px 0; font-weight: bold; color: #555;">Status Karier</td><td style="padding: 10px 0;"><span style="background-color: #DAA520; color: white; padding: 4px 10px; border-radius: 4px; font-weight: bold; font-size: 0.85rem;">{row['Karier']}</span></td></tr>
+                        <tr style="border-bottom: 1px solid #eee;"><td style="padding: 10px 0; font-weight: bold; color: #555;">Universitas / Instansi / Perusahaan</td><td style="padding: 10px 0;">{row['Universitas/Instansi/Perusahaan']}</td></tr>
+                        <tr style="border-bottom: 1px solid #eee;"><td style="padding: 10px 0; font-weight: bold; color: #555;">Program Studi / Jurusan</td><td style="padding: 10px 0;">{row['Jurusan']}</td></tr>
+                    </table>
+                </div>
+                """, unsafe_allow_html=True)
+    else:
+        # Tampilan default saat user belum mencari nama
+        st.info("💡 **Petunjuk**: Masukkan kata kunci nama alumni di kolom pencarian **'Cari Nama Alumni'** pada sidebar sebelah kiri untuk melakukan pencarian profil secara detail.")
+        st.markdown("""
+        <div style="background-color: #fff9e6; border-left: 5px solid #DAA520; padding: 15px; border-radius: 8px; margin-top: 10px;">
+            <p style="color: #7a5c00; margin: 0; font-size: 0.95rem;">
+                🔒 <b>Proteksi Privasi Data Alumni</b>: Sesuai dengan kesepakatan privasi, tabel berisi seluruh data alumni dari SMAN 2 Sukatani tidak lagi ditampilkan secara terbuka. Silakan gunakan bar pencarian nama untuk melihat profil alumni secara mandiri.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
 
+    # Tombol unduh data hasil pencarian/filter dalam bentuk CSV
     st.markdown("<br>", unsafe_allow_html=True)
     csv_data = df_filtered.to_csv(index=False).encode('utf-8')
     st.download_button(
-        label="📥 Unduh Data Alumni (Format CSV)",
+        label="📥 Unduh Hasil Pencarian (CSV)",
         data=csv_data,
         file_name="tracer_study_filtered_alumni.csv",
         mime="text/csv"
