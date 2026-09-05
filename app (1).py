@@ -311,25 +311,37 @@ if load_success and df_raw is not None:
                 )
                 fig_bar.update_traces(textposition="inside")
                 st.plotly_chart(fig_bar, use_container_width=True)
-                
-                # --- REKAP TABEL UNIVERSITAS ---
-                st.markdown("##### 📋 Rekap Tabel Jumlah Siswa per Universitas")
-                rekap_univ = univ_counts.copy()
-                rekap_univ["Persentase"] = rekap_univ["Persentase"].map("{:.1f}%".format)
-                
-                st.dataframe(
-                    rekap_univ,
-                    use_container_width=True,
-                    height=200,
-                    column_config={
-                        "Universitas": st.column_config.TextColumn("Nama Universitas / Perguruan Tinggi", width="large"),
-                        "Jumlah Alumni": st.column_config.NumberColumn("Jumlah Alumni", format="%d orang", width="small"),
-                        "Persentase": st.column_config.TextColumn("Persentase dari Total Kuliah", width="small")
-                    },
-                    hide_index=True
-                )
             else:
                 st.info("Pilih kategori 'KULIAH' pada filter karier untuk melihat sebaran Universitas.")
+
+        # --- REKAP TABEL UNIVERSITAS (FULL WIDTH / UJUNG KE UJUNG) ---
+        kuliah_only_all = df_filtered[
+            (df_filtered["Karier"] == "KULIAH") & 
+            (~df_filtered["Universitas/Instansi/Perusahaan"].isin(["-", "_", "secret", ""]))
+        ]
+        if len(kuliah_only_all) > 0:
+            st.markdown("<br>", unsafe_allow_html=True)
+            st.subheader("📋 Rekap Tabel Jumlah Siswa per Universitas")
+            univ_counts_all = kuliah_only_all["Universitas/Instansi/Perusahaan"].value_counts().reset_index()
+            univ_counts_all.columns = ["Universitas", "Jumlah Alumni"]
+            
+            total_kuliah_valid_all = univ_counts_all["Jumlah Alumni"].sum()
+            univ_counts_all["Persentase"] = (univ_counts_all["Jumlah Alumni"] / total_kuliah_valid_all) * 100
+            
+            rekap_univ = univ_counts_all.copy()
+            rekap_univ["Persentase"] = rekap_univ["Persentase"].map("{:.1f}%".format)
+            
+            st.dataframe(
+                rekap_univ,
+                use_container_width=True,
+                height=280,
+                column_config={
+                    "Universitas": st.column_config.TextColumn("Nama Universitas / Perguruan Tinggi", width="large"),
+                    "Jumlah Alumni": st.column_config.NumberColumn("Jumlah Alumni", format="%d orang", width="small"),
+                    "Persentase": st.column_config.TextColumn("Persentase dari Total Kuliah", width="small")
+                },
+                hide_index=True
+            )
 
     # --- PENCARIAN PROFIL DETAIL ALUMNI (MENGGANTIKAN TABEL) ---
     st.markdown("### 🔍 Hasil Pencarian Detail Alumni")
