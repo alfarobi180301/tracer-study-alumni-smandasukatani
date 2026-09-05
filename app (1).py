@@ -87,7 +87,7 @@ with col_header_title:
     # Sedikit spacer atas agar judul sejajar dengan logo
     st.markdown("<div style='height: 15px;'></div>", unsafe_allow_html=True)
     st.markdown("<h1 class='main-header'>TRACER STUDY ALUMNI SMAN 2 SUKATANI</h1>", unsafe_allow_html=True)
-    st.markdown("<p class='sub-header'>Sistem Pemantauan Perkembangan Karier, Perguruan Tinggi, dan Kewirausahaan Alumni</p>", unsafe_allow_html=True)
+    st.markdown("<p class='sub-header'>Sistem Pemantauan Perkembangan Karier, Perguruan Tinggi, dan Kewirausahaan Alumni Lulus Tahun 2022-2026</p>", unsafe_allow_html=True)
 
 # --- SIDEBAR: REFRESH DATA ---
 st.sidebar.markdown("## ⚙️ Pembaruan Data")
@@ -209,7 +209,7 @@ if load_success and df_raw is not None:
         df_filtered = df_filtered[df_filtered["Jurusan"].isin(selected_jurusan)]
 
     # --- METRICS & KPI SECTION ---
-    st.markdown("### 📊 Ringkasan Statistik Alumni")
+    st.markdown("### 📊 Statistik Alumni")
     total_alumni = len(df_filtered)
 
     if total_alumni > 0:
@@ -326,7 +326,7 @@ if load_success and df_raw is not None:
         ]
         if len(kuliah_only_all) > 0:
             st.markdown("<br>", unsafe_allow_html=True)
-            st.subheader("📋 Rekap Tabel Jumlah Siswa per Universitas")
+            st.subheader("📋 Rekap Universitas")
             univ_counts_all = kuliah_only_all["Universitas/Instansi/Perusahaan"].value_counts().reset_index()
             univ_counts_all.columns = ["Universitas", "Jumlah Alumni"]
             
