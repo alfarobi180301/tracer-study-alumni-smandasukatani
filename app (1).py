@@ -87,7 +87,7 @@ with col_header_title:
     # Sedikit spacer atas agar judul sejajar dengan logo
     st.markdown("<div style='height: 15px;'></div>", unsafe_allow_html=True)
     st.markdown("<h1 class='main-header'>TRACER STUDY ALUMNI SMAN 2 SUKATANI</h1>", unsafe_allow_html=True)
-    st.markdown("<p class='sub-header'>Sistem Pemantauan Perkembangan Karier, Perguruan Tinggi, dan Kewirausahaan Alumni Lulus Tahun 2022-2026</p>", unsafe_allow_html=True)
+    st.markdown("<p class='sub-header'>Sistem Pemantauan Perkembangan Karier, Perguruan Tinggi, dan Kewirausahaan Alumni</p>", unsafe_allow_html=True)
 
 # --- SIDEBAR: REFRESH DATA ---
 st.sidebar.markdown("## ⚙️ Pembaruan Data")
@@ -209,7 +209,7 @@ if load_success and df_raw is not None:
         df_filtered = df_filtered[df_filtered["Jurusan"].isin(selected_jurusan)]
 
     # --- METRICS & KPI SECTION ---
-    st.markdown("### 📊 Statistik Alumni")
+    st.markdown("### 📊 Ringkasan Statistik Alumni")
     total_alumni = len(df_filtered)
 
     if total_alumni > 0:
@@ -300,22 +300,32 @@ if load_success and df_raw is not None:
                 
                 top_univ = univ_counts.head(8).sort_values(by="Jumlah Alumni", ascending=True)
                 
+                # Ambil Top 8 Universitas terfavorit (terbesar di sebelah kiri)
+                top_univ = univ_counts.head(8).sort_values(by="Jumlah Alumni", ascending=False)
+                
                 fig_bar = px.bar(
                     top_univ,
-                    x="Jumlah Alumni",
-                    y="Universitas",
-                    orientation="h",
-                    text=top_univ.apply(lambda row: f"{row['Jumlah Alumni']} orang ({row['Persentase']:.1f}%)", axis=1),
+                    x="Universitas",
+                    y="Jumlah Alumni",
+                    text=top_univ.apply(lambda row: f"{row['Jumlah Alumni']} ({row['Persentase']:.1f}%)", axis=1),
                     color_discrete_sequence=["#DAA520"]
                 )
                 fig_bar.update_layout(
-                    margin=dict(l=20, r=20, t=10, b=10),
-                    height=350,
-                    xaxis_title="Jumlah Alumni",
-                    yaxis_title=""
+                    margin=dict(l=20, r=20, t=15, b=100), # Menambah margin bawah untuk rotasi nama universitas
+                    height=380,
+                    xaxis_title="",
+                    yaxis_title="Jumlah Alumni",
+                    xaxis=dict(
+                        fixedrange=True,
+                        tickangle=-45, # Memutar nama universitas 45 derajat agar rapi di bawahnya
+                        tickmode="linear"
+                    ),
+                    yaxis=dict(fixedrange=True), # Mematikan zoom sumbu Y
+                    dragmode=False # Mematikan fitur drag-to-zoom
                 )
-                fig_bar.update_traces(textposition="inside")
-                st.plotly_chart(fig_bar, use_container_width=True)
+                fig_bar.update_traces(textposition="outside") # Meletakkan label jumlah di atas batang vertikal
+                # Menonaktifkan modebar interaktif Plotly (hilangkan zoom/pan tools sepenuhnya)
+                st.plotly_chart(fig_bar, use_container_width=True, config={'displayModeBar': False, 'scrollZoom': False})
             else:
                 st.info("Pilih kategori 'KULIAH' pada filter karier untuk melihat sebaran Universitas.")
 
@@ -326,7 +336,7 @@ if load_success and df_raw is not None:
         ]
         if len(kuliah_only_all) > 0:
             st.markdown("<br>", unsafe_allow_html=True)
-            st.subheader("📋 Rekap Universitas")
+            st.subheader("📋 Rekap Tabel Jumlah Siswa per Universitas")
             univ_counts_all = kuliah_only_all["Universitas/Instansi/Perusahaan"].value_counts().reset_index()
             univ_counts_all.columns = ["Universitas", "Jumlah Alumni"]
             
