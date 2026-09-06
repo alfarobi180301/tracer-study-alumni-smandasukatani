@@ -298,32 +298,27 @@ if load_success and df_raw is not None:
                 total_kuliah_valid = univ_counts["Jumlah Alumni"].sum()
                 univ_counts["Persentase"] = (univ_counts["Jumlah Alumni"] / total_kuliah_valid) * 100
                 
+                # Ambil Top 8 Universitas terfavorit (diurutkan naik agar yang terbesar di atas pada chart horizontal)
                 top_univ = univ_counts.head(8).sort_values(by="Jumlah Alumni", ascending=True)
-                
-                # Ambil Top 8 Universitas terfavorit (terbesar di sebelah kiri)
-                top_univ = univ_counts.head(8).sort_values(by="Jumlah Alumni", ascending=False)
                 
                 fig_bar = px.bar(
                     top_univ,
-                    x="Universitas",
-                    y="Jumlah Alumni",
+                    x="Jumlah Alumni",
+                    y="Universitas",
+                    orientation="h",
                     text=top_univ.apply(lambda row: f"{row['Jumlah Alumni']} ({row['Persentase']:.1f}%)", axis=1),
                     color_discrete_sequence=["#DAA520"]
                 )
                 fig_bar.update_layout(
-                    margin=dict(l=20, r=20, t=15, b=100), # Menambah margin bawah untuk rotasi nama universitas
+                    margin=dict(l=20, r=20, t=15, b=10),
                     height=380,
-                    xaxis_title="",
-                    yaxis_title="Jumlah Alumni",
-                    xaxis=dict(
-                        fixedrange=True,
-                        tickangle=-45, # Memutar nama universitas 45 derajat agar rapi di bawahnya
-                        tickmode="linear"
-                    ),
-                    yaxis=dict(fixedrange=True), # Mematikan zoom sumbu Y
-                    dragmode=False # Mematikan fitur drag-to-zoom
+                    xaxis_title="Jumlah Alumni",
+                    yaxis_title="",
+                    xaxis=dict(fixedrange=True),
+                    yaxis=dict(fixedrange=True),
+                    dragmode=False
                 )
-                fig_bar.update_traces(textposition="outside") # Meletakkan label jumlah di atas batang vertikal
+                fig_bar.update_traces(textposition="inside")
                 # Menonaktifkan modebar interaktif Plotly (hilangkan zoom/pan tools sepenuhnya)
                 st.plotly_chart(fig_bar, use_container_width=True, config={'displayModeBar': False, 'scrollZoom': False})
             else:
