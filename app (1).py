@@ -331,7 +331,7 @@ if load_success and df_raw is not None:
         ]
         if len(kuliah_only_all) > 0:
             st.markdown("<br>", unsafe_allow_html=True)
-            st.subheader("📋 Rekap Tabel Jumlah Siswa per Universitas")
+            st.subheader("📋 Rekap Universitas")
             univ_counts_all = kuliah_only_all["Universitas/Instansi/Perusahaan"].value_counts().reset_index()
             univ_counts_all.columns = ["Universitas", "Jumlah Alumni"]
             
