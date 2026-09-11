@@ -3,6 +3,7 @@ import pandas as pd
 import plotly.express as px
 import os
 import json
+import requests
 
 # Konfigurasi Halaman Streamlit
 st.set_page_config(
@@ -67,9 +68,10 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# File Penyimpanan Lokal untuk Pendataan & Moderasi
+# File Penyimpanan Lokal untuk Pendataan, Moderasi, dan Konfigurasi
 PENDING_FILE = "pending_alumni.json"
 APPROVED_FILE = "approved_alumni.json"
+APPS_SCRIPT_URL_FILE = "apps_script_url.txt"
 ADMIN_PASSWORD_DEFAULT = "smandas2026"
 
 def load_json_data(file_path):
@@ -84,6 +86,39 @@ def load_json_data(file_path):
 def save_json_data(file_path, data):
     with open(file_path, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=4, ensure_ascii=False)
+
+def load_text_config(file_path):
+    if os.path.exists(file_path):
+        try:
+            with open(file_path, "r", encoding="utf-8") as f:
+                return f.read().strip()
+        except Exception:
+            return ""
+    return ""
+
+def save_text_config(file_path, content):
+    with open(file_path, "w", encoding="utf-8") as f:
+        f.write(content.strip())
+
+def send_to_google_sheet(entry, apps_script_url):
+    if not apps_script_url or not apps_script_url.startswith("http"):
+        return False, "URL Google Apps Script belum dikonfigurasi."
+    try:
+        payload = {
+            "nama": entry.get("Nama", ""),
+            "kelas": entry.get("Kelas", ""),
+            "karier": entry.get("Karier", ""),
+            "instansi": entry.get("Universitas/Instansi/Perusahaan", ""),
+            "jurusan": entry.get("Jurusan", ""),
+            "tahun": entry.get("Tahun Lulus", "")
+        }
+        res = requests.post(apps_script_url, json=payload, timeout=10)
+        if res.status_code == 200 or "Success" in res.text or "success" in res.text:
+            return True, "Data berhasil otomatis ditambahkan ke Google Sheets!"
+        else:
+            return True, f"Data dikirim ke Google Sheets (Respon: {res.text[:60]})"
+    except Exception as e:
+        return False, f"Gagal terhubung ke Google Sheets: {e}"
 
 # Tautan Spreadsheet Google Sheets Alumni SMAN 2 Sukatani (Telah Dikonfigurasi)
 SHEET_URL = "https://docs.google.com/spreadsheets/d/1Zt24-BXfXXuvDR7j79BTJy1UdTrXfTgBI9kg8ok01t8/edit?usp=drive_link"
@@ -432,7 +467,7 @@ if load_success and df_raw is not None:
         st.markdown("### 📝 Formulir Mandiri Alumni SMAN 2 Sukatani")
         st.markdown("""
         Apakah Anda alumni SMAN 2 Sukatani yang belum terdaftar atau ingin memperbarui data? 
-        Silakan isi formulir di bawah ini. Data yang Anda kirim akan ditinjau dan dimoderasi terlebih dahulu oleh Admin sebelum ditampilkan di dashboard publik.
+        Silakan isi formulir di bawah ini. Data yang Anda kirim akan ditinjau dan dimoderasi terlebih dahulu oleh Admin sebelum disetujui dan ditambahkan ke Spreadsheet Google Sheets serta Dashboard Publik.
         """)
         
         with st.form("form_alumni_new", clear_on_submit=True):
@@ -471,7 +506,7 @@ if load_success and df_raw is not None:
                     pending_list.append(new_entry)
                     save_json_data(PENDING_FILE, pending_list)
                     
-                    st.success("✅ **Data Anda Berhasil Terkirim!** Terima kasih telah berpartisipasi. Data Anda sedang menunggu proses moderasi oleh Admin SMAN 2 Sukatani.")
+                    st.success("✅ **Data Anda Berhasil Terkirim!** Terima kasih telah berpartisipasi. Data Anda sedang menunggu proses moderasi & verifikasi oleh Admin SMAN 2 Sukatani.")
 
     # ==========================================
     # TAB 3: PANEL MODERASI ADMIN
@@ -506,6 +541,36 @@ if load_success and df_raw is not None:
                     st.rerun()
 
             st.markdown("---")
+            
+            # --- KONFIGURASI INTEGRASI GOOGLE SHEETS WRITE (APPS SCRIPT) ---
+            st.subheader("🔗 Konfigurasi Otomatisasi Google Sheets")
+            current_script_url = load_text_config(APPS_SCRIPT_URL_FILE)
+            
+            with st.expander("🛠️ Pengaturan Link Webhook Google Apps Script (Klik untuk membuka)", expanded=not bool(current_script_url)):
+                st.markdown("""
+                Agar data yang disetujui Admin dapat **otomatis masuk/terisi ke dalam file Google Sheets TRACER STUDY ALUMNI SMANDAS**, silakan buat Apps Script di Google Sheets Anda:
+                1. Buka spreadsheet Google Sheets Anda -> Klik **Ekstensi (Extensions)** -> **Apps Script**.
+                2. Hapus semua kode lalu **paste** kode berikut:
+                ```javascript
+                function doPost(e) {
+                  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+                  var data = JSON.parse(e.postData.contents);
+                  sheet.appendRow([data.nama, data.kelas, data.karier, data.instansi, data.jurusan, data.tahun]);
+                  return ContentService.createTextOutput("Success").setMimeType(ContentService.MimeType.TEXT);
+                }
+                ```
+                3. Klik **Terapkan (Deploy)** -> **Terapkan sebagai Aplikasi Web (New deployment)**.
+                4. Setel **Jalankan sebagai**: *Saya (Me)* & **Siapa yang memiliki akses**: *Siapa saja (Anyone)*.
+                5. Salin **URL Aplikasi Web (Web App URL)** lalu tempelkan di bawah ini:
+                """)
+                
+                input_script_url = st.text_input("Google Apps Script Web App URL:", value=current_script_url, placeholder="https://script.google.com/macros/s/.../exec")
+                if st.button("💾 Simpan Konfigurasi Apps Script"):
+                    save_text_config(APPS_SCRIPT_URL_FILE, input_script_url)
+                    st.success("✅ Konfigurasi URL Google Apps Script berhasil disimpan!")
+                    st.rerun()
+
+            st.markdown("---")
             pending_list = load_json_data(PENDING_FILE)
             
             st.subheader(f"📥 Permintaan Data Alumni Baru ({len(pending_list)} Menunggu Moderasi)")
@@ -513,39 +578,80 @@ if load_success and df_raw is not None:
             if len(pending_list) == 0:
                 st.info("🎉 Tidak ada data alumni baru yang sedang menunggu moderasi saat ini.")
             else:
+                st.markdown("💡 *Admin dapat memeriksa dan **mengedit data** terlebih dahulu sebelum mengeklik tombol Setujui & Tampilkan.*")
+                
                 for idx, item in enumerate(pending_list):
-                    with st.expander(f"📌 {item.get('Nama')} - {item.get('Kelas')} ({item.get('Karier')})", expanded=True):
-                        col_m1, col_m2 = st.columns(2)
-                        with col_m1:
-                            st.write(f"**Nama Lengkap:** {item.get('Nama')}")
-                            st.write(f"**Kelas Terakhir:** {item.get('Kelas')}")
-                            st.write(f"**Tahun Lulus:** {item.get('Tahun Lulus')}")
-                        with col_m2:
-                            st.write(f"**Status Karier:** {item.get('Karier')}")
-                            st.write(f"**Universitas/Instansi:** {item.get('Universitas/Instansi/Perusahaan')}")
-                            st.write(f"**Jurusan/Posisi:** {item.get('Jurusan')}")
-                        
-                        col_act1, col_m_spacer, col_act2 = st.columns([2, 4, 2])
-                        with col_act1:
-                            if st.button(f"✅ Setujui & Tampilkan", key=f"app_{idx}"):
-                                # Pindahkan ke approved
+                    exp_title = f"📌 {item.get('Nama')} - {item.get('Kelas')} ({item.get('Karier')})"
+                    with st.expander(exp_title, expanded=True):
+                        st.markdown("##### ✏️ Form Edit & Verifikasi Admin")
+                        with st.form(key=f"edit_form_{idx}"):
+                            col_m1, col_m2 = st.columns(2)
+                            
+                            all_kelas = [
+                                "XII MIPA 1", "XII MIPA 2", "XII MIPA 3", "XII MIPA 4", "XII MIPA 5", "XII MIPA 6",
+                                "XII IPS 1", "XII IPS 2", "XII IPS 3", "XII IPS 4", "XII IPS 5"
+                            ]
+                            current_kelas = item.get("Kelas", "XII MIPA 1")
+                            kelas_idx = all_kelas.index(current_kelas) if current_kelas in all_kelas else 0
+                            
+                            karier_opts = ["KULIAH", "BEKERJA", "WIRAUSAHA"]
+                            current_karier = item.get("Karier", "BEKERJA")
+                            karier_idx = karier_opts.index(current_karier) if current_karier in karier_opts else 0
+
+                            with col_m1:
+                                e_nama = st.text_input("Nama Lengkap", value=item.get("Nama", ""), key=f"e_nama_{idx}")
+                                e_kelas = st.selectbox("Kelas Terakhir", all_kelas, index=kelas_idx, key=f"e_kelas_{idx}")
+                                e_tahun = st.number_input("Tahun Lulus", min_value=2010, max_value=2030, value=int(item.get("Tahun Lulus", 2026)), step=1, key=f"e_tahun_{idx}")
+                            
+                            with col_m2:
+                                e_karier = st.selectbox("Status Karier", karier_opts, index=karier_idx, key=f"e_karier_{idx}")
+                                e_instansi = st.text_input("Universitas / Instansi / Perusahaan", value=item.get("Universitas/Instansi/Perusahaan", ""), key=f"e_instansi_{idx}")
+                                e_jurusan = st.text_input("Program Studi / Jurusan / Posisi Pekerjaan", value=item.get("Jurusan", ""), key=f"e_jurusan_{idx}")
+                            
+                            st.markdown("<br>", unsafe_allow_html=True)
+                            col_act1, col_act2 = st.columns(2)
+                            
+                            with col_act1:
+                                btn_approve = st.form_submit_button("✅ Simpan Perubahan & Setujui (Kirim ke Google Sheets)", use_container_width=True)
+                            with col_act2:
+                                btn_reject = st.form_submit_button("❌ Tolak & Hapus Data", use_container_width=True)
+                                
+                            if btn_approve:
+                                updated_entry = {
+                                    "Nama": e_nama.strip().upper(),
+                                    "Kelas": e_kelas,
+                                    "Karier": e_karier,
+                                    "Universitas/Instansi/Perusahaan": e_instansi.strip(),
+                                    "Jurusan": e_jurusan.strip() if e_jurusan.strip() else "-",
+                                    "Tahun Lulus": int(e_tahun)
+                                }
+                                
+                                # 1. Pindahkan ke Approved List
                                 approved_list = load_json_data(APPROVED_FILE)
-                                approved_list.append(item)
+                                approved_list.append(updated_entry)
                                 save_json_data(APPROVED_FILE, approved_list)
                                 
-                                # Hapus dari pending
+                                # 2. Kirim otomatis ke Google Sheets jika URL Apps Script terkonfigurasi
+                                script_url = load_text_config(APPS_SCRIPT_URL_FILE)
+                                gsheet_status = ""
+                                if script_url:
+                                    success, msg = send_to_google_sheet(updated_entry, script_url)
+                                    gsheet_status = f" ({msg})"
+                                else:
+                                    gsheet_status = " (Catatan: Google Apps Script URL belum dikonfigurasi, data disimpan di lokal)"
+                                
+                                # 3. Hapus dari Pending
                                 pending_list.pop(idx)
                                 save_json_data(PENDING_FILE, pending_list)
                                 
                                 st.cache_data.clear()
-                                st.success(f"Data {item.get('Nama')} berhasil disetujui!")
+                                st.success(f"✅ Data **{updated_entry['Nama']}** berhasil diedit, disetujui, dan diproses{gsheet_status}!")
                                 st.rerun()
                                 
-                        with col_act2:
-                            if st.button(f"❌ Tolak (Hapus)", key=f"rej_{idx}"):
+                            if btn_reject:
                                 pending_list.pop(idx)
                                 save_json_data(PENDING_FILE, pending_list)
-                                st.warning(f"Data {item.get('Nama')} ditolak.")
+                                st.warning(f"Data {item.get('Nama')} telah ditolak.")
                                 st.rerun()
 
             st.markdown("---")
