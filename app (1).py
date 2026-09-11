@@ -467,7 +467,7 @@ if load_success and df_raw is not None:
         st.markdown("### 📝 Formulir Mandiri Alumni SMAN 2 Sukatani")
         st.markdown("""
         Apakah Anda alumni SMAN 2 Sukatani yang belum terdaftar atau ingin memperbarui data? 
-        Silakan isi formulir di bawah ini. Data yang Anda kirim akan ditinjau dan dimoderasi terlebih dahulu oleh Admin sebelum disetujui dan ditambahkan ke Spreadsheet Google Sheets serta Dashboard Publik.
+        Silakan isi formulir di bawah ini. Data yang Anda kirim akan ditinjau dan dimoderasi terlebih dahulu oleh Admin sebelum disetujui dan ditambahkan serta ditampilkan pada Dashboard Publik.
         """)
         
         with st.form("form_alumni_new", clear_on_submit=True):
