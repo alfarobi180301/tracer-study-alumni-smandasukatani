@@ -230,7 +230,7 @@ if load_success and df_raw is not None:
     tab_dashboard, tab_form, tab_admin = st.tabs([
         "📊 Dashboard & Analisis", 
         "📝 Tambah Data Alumni", 
-        "🔐 Moderasi Admin"
+        "🔐 Admin"
     ])
 
     # ==========================================
@@ -270,7 +270,7 @@ if load_success and df_raw is not None:
         if selected_jurusan:
             df_filtered = df_filtered[df_filtered["Jurusan"].isin(selected_jurusan)]
 
-        st.markdown("### 📊 Ringkasan Statistik Alumni")
+        st.markdown("### 📊 Statistik Alumni")
         total_alumni = len(df_filtered)
 
         if total_alumni > 0:
@@ -388,7 +388,7 @@ if load_success and df_raw is not None:
             ]
             if len(kuliah_only_all) > 0:
                 st.markdown("<br>", unsafe_allow_html=True)
-                st.subheader("📋 Rekap Tabel Jumlah Siswa per Universitas")
+                st.subheader("📋 Rekap Universitas")
                 univ_counts_all = kuliah_only_all["Universitas/Instansi/Perusahaan"].value_counts().reset_index()
                 univ_counts_all.columns = ["Universitas", "Jumlah Alumni"]
                 
@@ -525,7 +525,7 @@ if load_success and df_raw is not None:
             with col_pwd2:
                 st.markdown("<div style='height: 28px;'></div>", unsafe_allow_html=True)
                 if st.button("🔓 Masuk Admin"):
-                    if pwd_input == ADMIN_PASSWORD_DEFAULT or pwd_input == "admin123":
+                    if pwd_input == ADMIN_PASSWORD_DEFAULT or pwd_input == "adminhitsber2":
                         st.session_state.admin_logged_in = True
                         st.success("Akses Diberikan!")
                         st.rerun()
