@@ -451,7 +451,7 @@ if load_success and df_raw is not None:
                     </div>
                     """, unsafe_allow_html=True)
         else:
-            st.info("💡 **Petunjuk**: Masukkan kata kunci nama alumni di kolom pencarian **'Cari Nama Alumni'** pada sidebar sebelah kiri untuk melakukan pencarian profil secara detail.")
+            st.info("💡 **Petunjuk**: Masukkan kata kunci nama alumni di kolom pencarian **'Cari Nama Alumni'** pada sidebar sebelah kiri (tanda panah di pojok kiri atas) untuk melakukan pencarian profil secara detail.")
             st.markdown("""
             <div style="background-color: #fff9e6; border-left: 5px solid #DAA520; padding: 15px; border-radius: 8px; margin-top: 10px;">
                 <p style="color: #7a5c00; margin: 0; font-size: 0.95rem;">
