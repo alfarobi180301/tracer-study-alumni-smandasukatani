@@ -230,7 +230,7 @@ if load_success and df_raw is not None:
     tab_dashboard, tab_form, tab_admin = st.tabs([
         "📊 Dashboard & Analisis", 
         "📝 Tambah Data Alumni", 
-        "🔐 Admin"
+        "🔐 Moderasi Admin"
     ])
 
     # ==========================================
@@ -270,7 +270,7 @@ if load_success and df_raw is not None:
         if selected_jurusan:
             df_filtered = df_filtered[df_filtered["Jurusan"].isin(selected_jurusan)]
 
-        st.markdown("### 📊 Statistik Alumni")
+        st.markdown("### 📊 Ringkasan Statistik Alumni")
         total_alumni = len(df_filtered)
 
         if total_alumni > 0:
@@ -388,7 +388,7 @@ if load_success and df_raw is not None:
             ]
             if len(kuliah_only_all) > 0:
                 st.markdown("<br>", unsafe_allow_html=True)
-                st.subheader("📋 Rekap Universitas")
+                st.subheader("📋 Rekap Tabel Jumlah Siswa per Universitas")
                 univ_counts_all = kuliah_only_all["Universitas/Instansi/Perusahaan"].value_counts().reset_index()
                 univ_counts_all.columns = ["Universitas", "Jumlah Alumni"]
                 
@@ -451,7 +451,7 @@ if load_success and df_raw is not None:
                     </div>
                     """, unsafe_allow_html=True)
         else:
-            st.info("💡 **Petunjuk**: Masukkan kata kunci nama alumni di kolom pencarian **'Cari Nama Alumni'** pada sidebar sebelah kiri (tanda panah di pojok kiri atas) untuk melakukan pencarian profil secara detail.")
+            st.info("💡 **Petunjuk**: Masukkan kata kunci nama alumni di kolom pencarian **'Cari Nama Alumni'** pada sidebar sebelah kiri untuk melakukan pencarian profil secara detail.")
             st.markdown("""
             <div style="background-color: #fff9e6; border-left: 5px solid #DAA520; padding: 15px; border-radius: 8px; margin-top: 10px;">
                 <p style="color: #7a5c00; margin: 0; font-size: 0.95rem;">
@@ -467,7 +467,7 @@ if load_success and df_raw is not None:
         st.markdown("### 📝 Formulir Mandiri Alumni SMAN 2 Sukatani")
         st.markdown("""
         Apakah Anda alumni SMAN 2 Sukatani yang belum terdaftar atau ingin memperbarui data? 
-        Silakan isi formulir di bawah ini. Data yang Anda kirim akan ditinjau dan dimoderasi terlebih dahulu oleh Admin sebelum disetujui dan ditambahkan serta ditampilkan pada Dashboard Publik.
+        Silakan isi formulir di bawah ini. Data yang Anda kirim akan ditinjau dan dimoderasi terlebih dahulu oleh Admin sebelum disetujui dan ditambahkan ke Spreadsheet Google Sheets serta Dashboard Publik.
         """)
         
         with st.form("form_alumni_new", clear_on_submit=True):
@@ -475,8 +475,29 @@ if load_success and df_raw is not None:
             with col_f1:
                 f_nama = st.text_input("Nama Lengkap *", placeholder="Contoh: AHMAD FAUZI")
                 f_kelas = st.selectbox("Kelas Terakhir *", [
-                    "XII MIPA 1", "XII MIPA 2", "XII MIPA 3", "XII MIPA 4", "XII MIPA 5", "XII MIPA 6",
-                    "XII IPS 1", "XII IPS 2", "XII IPS 3", "XII IPS 4", "XII IPS 5"
+                    "12A",
+                    "12B",
+                    "12C",
+                    "12D",
+                    "12E",
+                    "12F",
+                    "12G",
+                    "12H",
+                    "12I",
+                    "12J",
+                    "12K",
+                    "12L",
+                    "XII MIPA 1",
+                    "XII MIPA 2",
+                    "XII MIPA 3",
+                    "XII MIPA 4",
+                    "XII MIPA 5",
+                    "XII MIPA 6",
+                    "XII IPS 1",
+                    "XII IPS 2",
+                    "XII IPS 3",
+                    "XII IPS 4",
+                    "XII IPS 5"
                 ])
                 f_tahun = st.number_input("Tahun Lulus *", min_value=2010, max_value=2030, value=2026, step=1)
             
@@ -525,7 +546,7 @@ if load_success and df_raw is not None:
             with col_pwd2:
                 st.markdown("<div style='height: 28px;'></div>", unsafe_allow_html=True)
                 if st.button("🔓 Masuk Admin"):
-                    if pwd_input == ADMIN_PASSWORD_DEFAULT or pwd_input == "adminhitsber2":
+                    if pwd_input == ADMIN_PASSWORD_DEFAULT or pwd_input == "admin123":
                         st.session_state.admin_logged_in = True
                         st.success("Akses Diberikan!")
                         st.rerun()
@@ -588,10 +609,30 @@ if load_success and df_raw is not None:
                             col_m1, col_m2 = st.columns(2)
                             
                             all_kelas = [
-                                "XII MIPA 1", "XII MIPA 2", "XII MIPA 3", "XII MIPA 4", "XII MIPA 5", "XII MIPA 6",
-                                "XII IPS 1", "XII IPS 2", "XII IPS 3", "XII IPS 4", "XII IPS 5", "12A", "12B", "12C", 
-                                "12D", "12E", "12F", "12G", "12H", "12I", "12J", "12K", "12L"
-                            ]
+                    "12A",
+                    "12B",
+                    "12C",
+                    "12D",
+                    "12E",
+                    "12F",
+                    "12G",
+                    "12H",
+                    "12I",
+                    "12J",
+                    "12K",
+                    "12L",
+                    "XII MIPA 1",
+                    "XII MIPA 2",
+                    "XII MIPA 3",
+                    "XII MIPA 4",
+                    "XII MIPA 5",
+                    "XII MIPA 6",
+                    "XII IPS 1",
+                    "XII IPS 2",
+                    "XII IPS 3",
+                    "XII IPS 4",
+                    "XII IPS 5"
+                ]
                             current_kelas = item.get("Kelas", "XII MIPA 1")
                             kelas_idx = all_kelas.index(current_kelas) if current_kelas in all_kelas else 0
                             
