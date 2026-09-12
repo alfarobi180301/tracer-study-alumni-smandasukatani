@@ -589,7 +589,8 @@ if load_success and df_raw is not None:
                             
                             all_kelas = [
                                 "XII MIPA 1", "XII MIPA 2", "XII MIPA 3", "XII MIPA 4", "XII MIPA 5", "XII MIPA 6",
-                                "XII IPS 1", "XII IPS 2", "XII IPS 3", "XII IPS 4", "XII IPS 5"
+                                "XII IPS 1", "XII IPS 2", "XII IPS 3", "XII IPS 4", "XII IPS 5", "12A", "12B", "12C", 
+                                "12D", "12E", "12F", "12G", "12H", "12I", "12J", "12K", "12L"
                             ]
                             current_kelas = item.get("Kelas", "XII MIPA 1")
                             kelas_idx = all_kelas.index(current_kelas) if current_kelas in all_kelas else 0
