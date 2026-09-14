@@ -230,7 +230,7 @@ if load_success and df_raw is not None:
     tab_dashboard, tab_form, tab_admin = st.tabs([
         "📊 Dashboard & Analisis", 
         "📝 Tambah Data Alumni", 
-        "🔐 Moderasi Admin"
+        "🔐 Admin"
     ])
 
     # ==========================================
@@ -270,7 +270,7 @@ if load_success and df_raw is not None:
         if selected_jurusan:
             df_filtered = df_filtered[df_filtered["Jurusan"].isin(selected_jurusan)]
 
-        st.markdown("### 📊 Ringkasan Statistik Alumni")
+        st.markdown("### 📊 Statistik Alumni")
         total_alumni = len(df_filtered)
 
         if total_alumni > 0:
@@ -388,7 +388,7 @@ if load_success and df_raw is not None:
             ]
             if len(kuliah_only_all) > 0:
                 st.markdown("<br>", unsafe_allow_html=True)
-                st.subheader("📋 Rekap Tabel Jumlah Siswa per Universitas")
+                st.subheader("📋 Rekap Universitas")
                 univ_counts_all = kuliah_only_all["Universitas/Instansi/Perusahaan"].value_counts().reset_index()
                 univ_counts_all.columns = ["Universitas", "Jumlah Alumni"]
                 
@@ -451,7 +451,7 @@ if load_success and df_raw is not None:
                     </div>
                     """, unsafe_allow_html=True)
         else:
-            st.info("💡 **Petunjuk**: Masukkan kata kunci nama alumni di kolom pencarian **'Cari Nama Alumni'** pada sidebar sebelah kiri untuk melakukan pencarian profil secara detail.")
+            st.info("💡 **Petunjuk**: Masukkan kata kunci nama alumni di kolom pencarian **'Cari Nama Alumni'** pada sidebar sebelah kiri (tanda panah di pojok kiri atas) untuk melakukan pencarian profil secara detail.")
             st.markdown("""
             <div style="background-color: #fff9e6; border-left: 5px solid #DAA520; padding: 15px; border-radius: 8px; margin-top: 10px;">
                 <p style="color: #7a5c00; margin: 0; font-size: 0.95rem;">
@@ -467,7 +467,7 @@ if load_success and df_raw is not None:
         st.markdown("### 📝 Formulir Mandiri Alumni SMAN 2 Sukatani")
         st.markdown("""
         Apakah Anda alumni SMAN 2 Sukatani yang belum terdaftar atau ingin memperbarui data? 
-        Silakan isi formulir di bawah ini. Data yang Anda kirim akan ditinjau dan dimoderasi terlebih dahulu oleh Admin sebelum disetujui dan ditambahkan ke Spreadsheet Google Sheets serta Dashboard Publik.
+        Silakan isi formulir di bawah ini. Data yang Anda kirim akan ditinjau dan dimoderasi terlebih dahulu oleh Admin sebelum disetujui dan ditampilkan di Dashboard Publik.
         """)
         
         with st.form("form_alumni_new", clear_on_submit=True):
