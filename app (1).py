@@ -655,14 +655,32 @@ if load_success and df_raw is not None:
                                 st.rerun()
 
             st.markdown("---")
-            st.subheader("📋 Daftar Alumni Mandiri yang Telah Disetujui")
             approved_list = load_json_data(APPROVED_FILE)
+            st.subheader(f"📋 Daftar Alumni Mandiri yang Telah Disetujui ({len(approved_list)} Alumni)")
+            
             if len(approved_list) > 0:
                 df_app_view = pd.DataFrame(approved_list)
                 st.dataframe(df_app_view, use_container_width=True)
-                if st.button("🗑️ Hapus Semua Data Mandiri Approved (Reset)"):
+                
+                st.markdown("##### 🗑️ Opsi Hapus Alumni Satuan (Satu per Satu):")
+                
+                for app_idx, app_item in enumerate(approved_list):
+                    col_ap1, col_ap2 = st.columns([5, 1])
+                    with col_ap1:
+                        st.markdown(f"**{app_idx+1}. {app_item.get('Nama')}** — {app_item.get('Kelas')} | {app_item.get('Karier')} | {app_item.get('Universitas/Instansi/Perusahaan')} ({app_item.get('Tahun Lulus')})")
+                    with col_ap2:
+                        if st.button(f"🗑️ Hapus", key=f"del_single_app_{app_idx}"):
+                            removed_item = approved_list.pop(app_idx)
+                            save_json_data(APPROVED_FILE, approved_list)
+                            st.cache_data.clear()
+                            st.success(f"Data **{removed_item.get('Nama')}** berhasil dihapus!")
+                            st.rerun()
+                
+                st.markdown("<br>", unsafe_allow_html=True)
+                if st.button("⚠️ Hapus Semua Data Mandiri Approved (Reset Total)"):
                     save_json_data(APPROVED_FILE, [])
                     st.cache_data.clear()
+                    st.success("Seluruh data alumni mandiri yang disetujui telah di-reset.")
                     st.rerun()
             else:
                 st.write("Belum ada data alumni hasil penambahan mandiri yang disetujui.")
