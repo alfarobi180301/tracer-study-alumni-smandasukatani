@@ -72,7 +72,7 @@ st.markdown("""
 PENDING_FILE = "pending_alumni.json"
 APPROVED_FILE = "approved_alumni.json"
 APPS_SCRIPT_URL_FILE = "apps_script_url.txt"
-ADMIN_PASSWORD_DEFAULT = "smandas2026"
+ADMIN_PASSWORD_DEFAULT = "adminhitsber2"
 
 def load_json_data(file_path):
     if os.path.exists(file_path):
@@ -525,7 +525,7 @@ if load_success and df_raw is not None:
             with col_pwd2:
                 st.markdown("<div style='height: 28px;'></div>", unsafe_allow_html=True)
                 if st.button("🔓 Masuk Admin"):
-                    if pwd_input == ADMIN_PASSWORD_DEFAULT or pwd_input == "admin123":
+                    if pwd_input == ADMIN_PASSWORD_DEFAULT or pwd_input == "adminhitsber2":
                         st.session_state.admin_logged_in = True
                         st.success("Akses Diberikan!")
                         st.rerun()
