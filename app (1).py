@@ -16,60 +16,146 @@ st.set_page_config(
 # Custom CSS untuk warna khas SMAN 2 Sukatani (Merah Maroon dan Emas/Kuning)
 st.markdown("""
     <style>
+    /* Modern Geometric / Sharp Line Theme (Neo-Brutalist & Clean Structural UI) */
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800;900&display=swap');
+    
+    html, body, [class*="css"] {
+        font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
     .main-header {
         color: #8B0000;
-        font-family: 'Trebuchet MS', sans-serif;
-        font-weight: bold;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-weight: 900;
         text-align: left;
+        letter-spacing: -0.5px;
         margin-top: 0px;
         margin-bottom: 2px;
+        text-transform: uppercase;
     }
     .sub-header {
         color: #DAA520;
-        font-family: 'Trebuchet MS', sans-serif;
+        font-family: 'Plus Jakarta Sans', sans-serif;
         text-align: left;
         font-size: 1.15rem;
+        font-weight: 700;
         margin-top: 0px;
-        margin-bottom: 10px;
+        margin-bottom: 15px;
+        border-bottom: 3px solid #8B0000;
+        padding-bottom: 8px;
     }
+
+    /* KPI Cards - Sharp Solid Border & Bold Accents */
     .card-kpi {
-        background-color: #fcfcfc;
-        padding: 15px;
-        border-radius: 10px;
-        border-left: 5px solid #8B0000;
-        box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
+        background-color: #FFFFFF;
+        padding: 20px 14px;
+        border-radius: 0px !important;
+        border: 2px solid #1E1E1E !important;
+        border-top: 6px solid #8B0000 !important;
+        box-shadow: 4px 4px 0px #1E1E1E !important;
         text-align: center;
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .card-kpi:hover {
+        transform: translate(-2px, -2px);
+        box-shadow: 6px 6px 0px #1E1E1E !important;
     }
     .card-kpi-title {
-        color: #555;
-        font-size: 0.9rem;
-        font-weight: bold;
-        margin-bottom: 5px;
+        color: #1E1E1E;
+        font-size: 0.85rem;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        margin-bottom: 6px;
     }
     .card-kpi-val {
         color: #8B0000;
-        font-size: 1.8rem;
-        font-weight: bold;
+        font-size: 2.2rem;
+        font-weight: 900;
+        line-height: 1.1;
     }
+
+    /* Tabs Styling - Bold Sharp Tabs */
     .stTabs [data-baseweb="tab-list"] {
-        gap: 8px;
+        gap: 6px;
+        border-bottom: 3px solid #1E1E1E;
+        padding-bottom: 0px;
     }
     .stTabs [data-baseweb="tab"] {
-        background-color: #f8f9fa;
-        border-radius: 6px 6px 0px 0px;
-        padding: 8px 16px;
-        font-weight: bold;
-        color: #555;
+        background-color: #F4F4F5;
+        border: 2px solid #1E1E1E !important;
+        border-bottom: none !important;
+        border-radius: 0px !important;
+        padding: 12px 24px;
+        font-weight: 800;
+        color: #1E1E1E;
+        font-size: 0.95rem;
     }
     .stTabs [aria-selected="true"] {
         background-color: #8B0000 !important;
-        color: white !important;
+        color: #FFFFFF !important;
+        border: 2px solid #8B0000 !important;
+        border-bottom: none !important;
     }
-        [data-testid="stSidebar"] {
+
+    /* Input Fields, Selectboxes, and Text Inputs */
+    div[data-baseweb="select"] > div, 
+    div[data-baseweb="input"] > div,
+    input {
+        border-radius: 0px !important;
+        border: 2px solid #1E1E1E !important;
+        background-color: #FFFFFF !important;
+    }
+
+    /* Streamlit Buttons - Sharp Geometric Edges */
+    .stButton > button {
+        border-radius: 0px !important;
+        border: 2px solid #1E1E1E !important;
+        font-weight: 800 !important;
+        box-shadow: 3px 3px 0px #1E1E1E !important;
+        transition: all 0.12s ease !important;
+        background-color: #FFFFFF !important;
+        color: #1E1E1E !important;
+    }
+    .stButton > button:hover {
+        transform: translate(-1px, -1px) !important;
+        box-shadow: 5px 5px 0px #1E1E1E !important;
+        background-color: #F8F9FA !important;
+        border-color: #8B0000 !important;
+        color: #8B0000 !important;
+    }
+    .stButton > button:active {
+        transform: translate(2px, 2px) !important;
+        box-shadow: 1px 1px 0px #1E1E1E !important;
+    }
+
+    /* Hide Sidebar completely */
+    [data-testid="stSidebar"] {
         display: none;
     }
     [data-testid="collapsedControl"] {
         display: none;
+    }
+
+    /* Profile Card Sharp Accent */
+    .profile-card-sharp {
+        background-color: #FFFFFF;
+        padding: 22px;
+        border-radius: 0px;
+        border: 2px solid #1E1E1E;
+        border-left: 8px solid #8B0000;
+        box-shadow: 5px 5px 0px #1E1E1E;
+        margin-bottom: 20px;
+    }
+    .profile-card-sharp h3 {
+        color: #8B0000;
+        margin-top: 0;
+        margin-bottom: 16px;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-weight: 800;
+        letter-spacing: -0.3px;
+        border-bottom: 2px solid #DAA520;
+        padding-bottom: 6px;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -378,7 +464,7 @@ if load_success and df_raw is not None:
                         color_discrete_sequence=["#8B0000", "#DAA520", "#32CD32", "#808080"],
                         hole=0.4
                     )
-                    fig_pie.update_layout(
+                    fig_pie.update_layout(font_family="Plus Jakarta Sans", 
                         margin=dict(l=20, r=20, t=10, b=10),
                         height=350,
                         legend=dict(orientation="h", yanchor="bottom", y=-0.2, xanchor="center", x=0.5)
@@ -409,7 +495,7 @@ if load_success and df_raw is not None:
                             text=top_univ.apply(lambda row: f"{row['Jumlah Alumni']} ({row['Persentase']:.1f}%)", axis=1),
                             color_discrete_sequence=["#DAA520"]
                         )
-                        fig_bar.update_layout(
+                        fig_bar.update_layout(font_family="Plus Jakarta Sans", 
                             margin=dict(l=20, r=20, t=15, b=10),
                             height=380,
                             xaxis_title="Jumlah Alumni",
@@ -469,7 +555,7 @@ if load_success and df_raw is not None:
                     if selected_alumni != "-- Pilih Alumni --":
                         row = matches[matches["Nama"] == selected_alumni].iloc[0]
                         st.markdown(f"""
-                        <div style="background-color: #fcfcfc; padding: 20px; border-radius: 12px; border-left: 5px solid #8B0000; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-top: 15px;">
+                        <div class="profile-card-sharp" style="margin-top: 15px;">
                             <h3 style="color: #8B0000; margin-top: 0; margin-bottom: 15px; font-family: sans-serif;">🎓 PROFIL LENGKAP ALUMNI</h3>
                             <table style="width: 100%; border-collapse: collapse; font-size: 1.05rem;">
                                 <tr style="border-bottom: 1px solid #eee;"><td style="padding: 10px 0; font-weight: bold; width: 35%; color: #555;">Nama Lengkap</td><td style="padding: 10px 0; font-weight: bold; color: #8B0000;">{row['Nama']}</td></tr>
@@ -484,7 +570,7 @@ if load_success and df_raw is not None:
                 else:
                     for _, row in matches.iterrows():
                         st.markdown(f"""
-                        <div style="background-color: #fcfcfc; padding: 20px; border-radius: 12px; border-left: 5px solid #8B0000; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 15px;">
+                        <div class="profile-card-sharp">
                             <h3 style="color: #8B0000; margin-top: 0; margin-bottom: 15px; font-family: sans-serif;">👤 PROFIL ALUMNI</h3>
                             <table style="width: 100%; border-collapse: collapse; font-size: 1.05rem;">
                                 <tr style="border-bottom: 1px solid #eee;"><td style="padding: 10px 0; font-weight: bold; width: 35%; color: #555;">Nama Lengkap</td><td style="padding: 10px 0; font-weight: bold; color: #8B0000;">{row['Nama']}</td></tr>
@@ -499,7 +585,7 @@ if load_success and df_raw is not None:
             else:
                 st.info("💡 **Petunjuk**: Masukkan kata kunci nama alumni di kolom pencarian **'Cari Nama Alumni'** pada menu di atas untuk melakukan pencarian profil secara detail.")
                 st.markdown("""
-                <div style="background-color: #fff9e6; border-left: 5px solid #DAA520; padding: 15px; border-radius: 8px; margin-top: 10px;">
+                <div style="background-color: #FFFDF0; border: 2px solid #1E1E1E; border-left: 8px solid #DAA520; padding: 16px; border-radius: 0px; box-shadow: 3px 3px 0px #1E1E1E; margin-top: 10px;">
                     <p style="color: #7a5c00; margin: 0; font-size: 0.95rem;">
                         🔒 <b>Proteksi Privasi Data Alumni</b>: Sesuai dengan kesepakatan privasi, tabel berisi seluruh data alumni dari SMAN 2 Sukatani tidak lagi ditampilkan secara terbuka. Silakan gunakan bar pencarian nama untuk melihat profil alumni secara mandiri.
                     </p>
