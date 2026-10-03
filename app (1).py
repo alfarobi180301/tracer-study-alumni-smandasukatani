@@ -15,14 +15,12 @@ st.set_page_config(
 
 # Custom CSS untuk warna khas SMAN 2 Sukatani (Merah Maroon dan Emas/Kuning)
 st.markdown("""
-    
     <style>
-    /* 3D Modern Structural Theme for SMAN 2 Sukatani Dashboard */
+    /* Modern Geometric / Sharp Line Theme (Neo-Brutalist & Clean Structural UI) */
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800;900&display=swap');
     
     html, body, [class*="css"] {
         font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-        background-color: #F8F9FA;
     }
 
     .main-header {
@@ -34,35 +32,33 @@ st.markdown("""
         margin-top: 0px;
         margin-bottom: 2px;
         text-transform: uppercase;
-        text-shadow: 2px 2px 0px #1E1E1E, 4px 4px 0px rgba(218, 165, 32, 0.3);
     }
     .sub-header {
         color: #DAA520;
         font-family: 'Plus Jakarta Sans', sans-serif;
         text-align: left;
         font-size: 1.15rem;
-        font-weight: 800;
+        font-weight: 700;
         margin-top: 0px;
         margin-bottom: 15px;
         border-bottom: 3px solid #8B0000;
         padding-bottom: 8px;
-        text-shadow: 1px 1px 0px #1E1E1E;
     }
 
-    /* KPI Cards - 3D Pop Shadow & Bevel Accents */
+    /* KPI Cards - Sharp Solid Border & Bold Accents */
     .card-kpi {
-        background: linear-gradient(135deg, #FFFFFF 0%, #F9F9FB 100%);
+        background-color: #FFFFFF;
         padding: 20px 14px;
         border-radius: 0px !important;
         border: 2px solid #1E1E1E !important;
         border-top: 6px solid #8B0000 !important;
-        box-shadow: 6px 6px 0px #1E1E1E, 10px 10px 0px rgba(139, 0, 0, 0.2) !important;
+        box-shadow: 4px 4px 0px #1E1E1E !important;
         text-align: center;
         transition: transform 0.15s ease, box-shadow 0.15s ease;
     }
     .card-kpi:hover {
-        transform: translate(-3px, -3px);
-        box-shadow: 8px 8px 0px #1E1E1E, 12px 12px 0px rgba(139, 0, 0, 0.3) !important;
+        transform: translate(-2px, -2px);
+        box-shadow: 6px 6px 0px #1E1E1E !important;
     }
     .card-kpi-title {
         color: #1E1E1E;
@@ -77,12 +73,11 @@ st.markdown("""
         font-size: 2.2rem;
         font-weight: 900;
         line-height: 1.1;
-        text-shadow: 1px 1px 0px #DAA520;
     }
 
-    /* Tabs Styling - 3D Physical Keys */
+    /* Tabs Styling - Bold Sharp Tabs */
     .stTabs [data-baseweb="tab-list"] {
-        gap: 8px;
+        gap: 6px;
         border-bottom: 3px solid #1E1E1E;
         padding-bottom: 0px;
     }
@@ -95,47 +90,38 @@ st.markdown("""
         font-weight: 800;
         color: #1E1E1E;
         font-size: 0.95rem;
-        box-shadow: 4px -2px 0px #1E1E1E !important;
-        transition: all 0.15s ease !important;
     }
     .stTabs [aria-selected="true"] {
         background-color: #8B0000 !important;
         color: #FFFFFF !important;
         border: 2px solid #8B0000 !important;
         border-bottom: none !important;
-        box-shadow: 6px -4px 0px #1E1E1E, 8px -6px 0px #DAA520 !important;
-        transform: translate(-2px, -2px);
     }
 
-    /* Input Fields, Selectboxes, and Text Inputs - 3D Inset/Outset */
+    /* Input Fields, Selectboxes, and Text Inputs */
     div[data-baseweb="select"] > div, 
     div[data-baseweb="input"] > div,
     input {
         border-radius: 0px !important;
         border: 2px solid #1E1E1E !important;
         background-color: #FFFFFF !important;
-        box-shadow: 3px 3px 0px #1E1E1E !important;
-        transition: box-shadow 0.12s ease !important;
-    }
-    div[data-baseweb="select"] > div:focus-within, 
-    div[data-baseweb="input"] > div:focus-within {
-        box-shadow: 5px 5px 0px #8B0000 !important;
     }
 
-    /* Streamlit Buttons - 3D Pushable Feel */
+    /* Streamlit Buttons - Sharp Geometric Edges */
     .stButton > button {
         border-radius: 0px !important;
         border: 2px solid #1E1E1E !important;
         font-weight: 800 !important;
-        box-shadow: 4px 4px 0px #1E1E1E !important;
+        box-shadow: 3px 3px 0px #1E1E1E !important;
         transition: all 0.12s ease !important;
-        background: linear-gradient(180deg, #FFFFFF 0%, #F0F0F0 100%) !important;
+        background-color: #FFFFFF !important;
         color: #1E1E1E !important;
     }
     .stButton > button:hover {
-        transform: translate(-2px, -2px) !important;
-        box-shadow: 6px 6px 0px #8B0000 !important;
-        background: #FFFFFF !important;
+        transform: translate(-1px, -1px) !important;
+        box-shadow: 5px 5px 0px #1E1E1E !important;
+        background-color: #F8F9FA !important;
+        border-color: #8B0000 !important;
         color: #8B0000 !important;
     }
     .stButton > button:active {
@@ -143,14 +129,22 @@ st.markdown("""
         box-shadow: 1px 1px 0px #1E1E1E !important;
     }
 
-    /* 3D Container & Box Cards */
-    .profile-card-sharp, .sharp-box-3d {
+    /* Hide Sidebar completely */
+    [data-testid="stSidebar"] {
+        display: none;
+    }
+    [data-testid="collapsedControl"] {
+        display: none;
+    }
+
+    /* Profile Card Sharp Accent */
+    .profile-card-sharp {
         background-color: #FFFFFF;
         padding: 22px;
         border-radius: 0px;
         border: 2px solid #1E1E1E;
         border-left: 8px solid #8B0000;
-        box-shadow: 6px 6px 0px #1E1E1E, 10px 10px 0px rgba(139, 0, 0, 0.2);
+        box-shadow: 5px 5px 0px #1E1E1E;
         margin-bottom: 20px;
     }
     .profile-card-sharp h3 {
@@ -163,32 +157,7 @@ st.markdown("""
         border-bottom: 2px solid #DAA520;
         padding-bottom: 6px;
     }
-
-    /* 3D Expander Boxes */
-    .stExpander {
-        border: 2px solid #1E1E1E !important;
-        box-shadow: 5px 5px 0px #1E1E1E, 8px 8px 0px rgba(218, 165, 32, 0.3) !important;
-        border-radius: 0px !important;
-        background-color: #FFFFFF !important;
-    }
-
-    /* 3D Color Styled University Table Frame */
-    div[data-testid="stDataFrame"] {
-        border: 3px solid #1E1E1E !important;
-        box-shadow: 6px 6px 0px #1E1E1E, 10px 10px 0px #DAA520 !important;
-        background-color: #FFFDF8 !important;
-        border-radius: 0px !important;
-    }
-
-    /* Hide Sidebar completely */
-    [data-testid="stSidebar"] {
-        display: none;
-    }
-    [data-testid="collapsedControl"] {
-        display: none;
-    }
     </style>
-
 """, unsafe_allow_html=True)
 
 # File Penyimpanan Lokal untuk Pendataan, Moderasi, dan Konfigurasi
@@ -559,17 +528,8 @@ if load_success and df_raw is not None:
                     rekap_univ = univ_counts_all.copy()
                     rekap_univ["Persentase"] = rekap_univ["Persentase"].map("{:.1f}%".format)
                     
-                    # Beri Warna Bergradasi & Elegan pada Tabel Rekapan Universitas
-                    styled_rekap = rekap_univ.style.background_gradient(
-                        subset=["Jumlah Alumni"], 
-                        cmap="YlOrRd"
-                    ).set_properties(**{
-                        'font-weight': '700',
-                        'color': '#1E1E1E'
-                    })
-                    
                     st.dataframe(
-                        styled_rekap,
+                        rekap_univ,
                         use_container_width=True,
                         height=280,
                         column_config={
